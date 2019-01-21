@@ -23,7 +23,7 @@ public class Test extends HttpServlet {
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		response.getWriter().append("Serveddd at: ").append(request.getContextPath());
+		response.getWriter().append("Servedddd at: ").append(request.getContextPath());
 	}
 
 	
