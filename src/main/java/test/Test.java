@@ -24,6 +24,7 @@ public class Test extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		response.getWriter().append("Servedddd at: ").append(request.getContextPath());
+		System.out.println(request.getRequestURI());
 	}
 
 	
