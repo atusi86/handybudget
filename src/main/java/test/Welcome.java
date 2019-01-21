@@ -7,25 +7,25 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
-@WebServlet("/test")
-public class Test extends HttpServlet {
+@WebServlet("/welcome")
+public class Welcome extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
 
-    public Test() {
+    public Welcome() {
         super();
         // TODO Auto-generated constructor stub
     }
 
-	
+
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		//response.getWriter().append("Servedddd at: ").append(request.getContextPath());
-		response.sendRedirect("/welcome?name=Attila");
+		String name = request.getParameter("name");
+		request.setAttribute("name", name);
+		request.getRequestDispatcher("welcome.jsp").forward(request, response);
 	}
 
-	
+
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(request, response);
