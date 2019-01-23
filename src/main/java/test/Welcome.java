@@ -1,6 +1,12 @@
 package test;
 
 import java.io.IOException;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -21,6 +27,16 @@ public class Welcome extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		String name = request.getParameter("name");
+		
+		EntityManagerFactory emf = Persistence.createEntityManagerFactory("testPU");
+		EntityManager em = emf.createEntityManager();
+		TypedQuery<TestEntity> testQuery = em.createQuery("SELECT t FROM TestEntity t", TestEntity.class);
+		List<TestEntity> testEntityList = testQuery.getResultList();
+		for(TestEntity entity : testEntityList) {
+			System.out.println(entity.toString());
+		}
+		
+		
 		request.setAttribute("name", name);
 		request.getRequestDispatcher("welcome.jsp").forward(request, response);
 	}
