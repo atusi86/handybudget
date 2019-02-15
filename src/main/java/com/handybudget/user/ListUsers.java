@@ -1,7 +1,8 @@
-package test;
+package com.handybudget.user;
 
 import java.io.IOException;
 import java.util.List;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -11,22 +12,16 @@ import javax.servlet.http.HttpServletResponse;
 import com.handybudget.domains.view.UserView;
 import com.handybudget.facade.user.UserFacade;
 
-@WebServlet("/welcome")
-public class Welcome extends HttpServlet {
+@WebServlet("/listUsers")
+public class ListUsers extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
 
-    public Welcome() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
-
     private UserFacade userFacade = new UserFacade();
-    
+    private int test = 10;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		String name = request.getParameter("name");
 		
 		List<UserView> userList = userFacade.getUsers();
 		
@@ -35,9 +30,10 @@ public class Welcome extends HttpServlet {
 			System.out.println(user.getEmail());
 		}
 		
+		test++;
+		System.out.println(test);
 		
-		request.setAttribute("name", name);
-		request.getRequestDispatcher("welcome.jsp").forward(request, response);
+		
 	}
 
 
