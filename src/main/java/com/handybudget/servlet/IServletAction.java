@@ -7,6 +7,6 @@ import org.json.JSONObject;
 
 public interface IServletAction {
 
-	JSONObject processRequest(HttpServletRequest request, HttpServletResponse response, JSONObject postData);
-	String getAuthenticationClassName();
+	public abstract String getAuthenticationClassName();
+	
 }

@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -17,7 +19,6 @@ public class User {
 	private String name;
 	private String email;
 	private String password;
-	private int token_id;
 	private int deleted;
 	
 	@Temporal(TemporalType.TIMESTAMP)
@@ -26,10 +27,17 @@ public class User {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date update_timestamp;
 	
-	
 	public User() {
 	}
 	
+	public User(String name, String email, String password) {
+		super();
+		this.name = name;
+		this.email = email;
+		this.password = password;
+	}
+
+
 	public int getId() {
 		return id;
 	}
@@ -54,12 +62,7 @@ public class User {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public int getToken_id() {
-		return token_id;
-	}
-	public void setToken_id(int token_id) {
-		this.token_id = token_id;
-	}
+
 	public int getDeleted() {
 		return deleted;
 	}
@@ -78,16 +81,7 @@ public class User {
 	public void setUpdate_timestamp(Date update_timestamp) {
 		this.update_timestamp = update_timestamp;
 	}
+	
 
-	@Override
-	public String toString() {
-		return "User [id=" + id + ", name=" + name + ", email=" + email + ", password=" + password + ", token_id="
-				+ token_id + ", deleted=" + deleted + ", create_timestamp=" + create_timestamp + ", update_timestamp="
-				+ update_timestamp + "]";
-	}
-	
-	
-	
-	
 	
 }

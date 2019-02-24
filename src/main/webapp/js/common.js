@@ -11,9 +11,10 @@ function createHttpRequest()
 	return xmlhttp;
 }
 
-function syncronJsonGetRequest(url){
+function syncronJsonGetRequest(url, token){
 	var xmlhttp = createHttpRequest();
 	xmlhttp.open("GET", url, false);
+	xmlhttp.setRequestHeader("Authorization", token)
 	xmlhttp.send(null);
 	return xmlhttp;
 }
