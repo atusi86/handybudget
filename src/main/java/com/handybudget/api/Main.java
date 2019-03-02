@@ -1,14 +1,10 @@
 package com.handybudget.api;
 
-import java.io.IOException;
-
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
 
-import com.handybudget.service.TokenService;
 import com.handybudget.servlet.WebAction;
 import com.handybudget.util.GeneralHelper;
 
@@ -28,7 +24,8 @@ public class Main extends WebAction {
 			result.put("isAuthenticated", false);
 		}
 
-		
+		request.setAttribute("randomString", GeneralHelper.getRandomString());
+
 		return result;
 
 	}

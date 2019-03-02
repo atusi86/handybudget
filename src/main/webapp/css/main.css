@@ -1,0 +1,37 @@
+.editButton:hover{
+    color: aqua;
+    cursor: pointer;
+}
+
+.removeButton:hover{
+    color: red;
+    cursor: pointer;
+}
+
+.pointerCursor{
+    cursor: pointer;
+}
+
+.sumRow{
+    font-weight: bold;
+    background-color: aliceblue;
+}
+
+.balanceAmount{
+    font-size: xx-large;
+    font-weight: 600;
+}
+
+.loadingScreen{
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(192, 192, 192, 0.5);
+    background-image: url("/img/Spinner-1s-200px.gif");
+    background-repeat: no-repeat;
+    background-position: center;
+}

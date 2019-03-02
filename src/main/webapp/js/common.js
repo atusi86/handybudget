@@ -14,33 +14,44 @@ function createHttpRequest()
 function syncronJsonGetRequest(url, token){
 	var xmlhttp = createHttpRequest();
 	xmlhttp.open("GET", url, false);
-	xmlhttp.setRequestHeader("Authorization", token)
+	xmlhttp.setRequestHeader("Authorization", token);
 	xmlhttp.send(null);
 	return xmlhttp;
 }
 
-function syncronJsonPostRequest(url, data){
+function syncronJsonPostRequest(url, data, token){
 	var xmlhttp = createHttpRequest();
 	xmlhttp.open("POST", url, false);
-	//xmlhttp.setRequestHeader('Content-type','application/json')
+	xmlhttp.setRequestHeader("Authorization", token);
 	xmlhttp.send(data);
 	return xmlhttp;
 }
 
-function asyncronJsonGetRequest(url, callback){
-    var xmlhttp = createHttpRequest();
-    xmlhttp.open("GET", url, true);
-	xmlhttp.onreadystatechange = callback;
-	xmlhttp.send(null);
-	return xmlhttp;
+function asyncronJsonGetRequest(xmlHttp, url, token, callback){
+	document.getElementById('loadingScreen').style.display = 'inline-block';
+
+	xmlHttp.open("GET", url, true);
+	xmlHttp.setRequestHeader("Authorization", token);
+	xmlHttp.onreadystatechange = callback;
+	xmlHttp.send(null);
+	return xmlHttp;
 }
 
-function asyncronJsonGetRequest(url, callback, data){
-    var xmlhttp = createHttpRequest();
-    xmlhttp.open("POST", url, true);
-	xmlhttp.onreadystatechange = callback;
-	xmlhttp.send(data);
-	return xmlhttp;
+function asyncronJsonPostRequest(xmlHttp, url, token, data, callback){
+	document.getElementById('loadingScreen').style.display = 'inline-block';
+	
+	xmlHttp.open("POST", url, true);
+	xmlHttp.setRequestHeader("Authorization", token);
+	xmlHttp.onreadystatechange = callback;
+	xmlHttp.send(JSON.stringify(data));
+	return xmlHttp;
+}
+
+function guidGenerator() {
+    var S4 = function() {
+       return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+    };
+    return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
 }
 
 /*  Syncron GET example:

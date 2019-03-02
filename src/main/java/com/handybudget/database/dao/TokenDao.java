@@ -1,5 +1,7 @@
 package com.handybudget.database.dao;
 
+import java.util.Date;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
@@ -26,6 +28,7 @@ public class TokenDao {
 		newToken.setIdentifier(token);
 		newToken.setExpiresIn(48);
 		newToken.setUser(user);
+		newToken.setCreate_timestamp(new Date());
 
 		try {
 			em.getTransaction().begin();
@@ -41,7 +44,7 @@ public class TokenDao {
 	public Token getTokenByUser(User user) {
 
 		EntityManager em = emf.createEntityManager();
-		TypedQuery<Token> query = em.createQuery("SELECT t FROM Token t WHERE t.user = :user", Token.class);
+		TypedQuery<Token> query = em.createQuery("SELECT t FROM Token t WHERE t.user = :user and t.deleted = 0", Token.class);
 		query.setParameter("user", user);
 		Token tokenObject = null;
 		try {
@@ -61,8 +64,10 @@ public class TokenDao {
 
 		try {
 			em.getTransaction().begin();
-			Query query = em.createQuery("UPDATE Token t set t.identifier = :identifier where t.user = :user");
+			Date currentDate = new Date();
+			Query query = em.createQuery("UPDATE Token t set t.identifier = :identifier, t.update_timestamp = : currentdate where t.user = :user");
 			query.setParameter("identifier", identifier);
+			query.setParameter("currentdate", currentDate);
 			query.setParameter("user", user);
 			query.executeUpdate();
 			em.getTransaction().commit();
@@ -75,7 +80,7 @@ public class TokenDao {
 	public Token getTokenByIdentifier(String authToken) {
 
 		EntityManager em = emf.createEntityManager();
-		TypedQuery<Token> query = em.createQuery("SELECT t FROM Token t WHERE t.identifier = :identifier", Token.class);
+		TypedQuery<Token> query = em.createQuery("SELECT t FROM Token t WHERE t.identifier = :identifier and t.deleted = 0", Token.class);
 		query.setParameter("identifier", authToken);
 		try {
 			Token token = query.getSingleResult();

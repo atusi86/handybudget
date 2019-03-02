@@ -1,6 +1,7 @@
 package com.handybudget.database.dao;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -28,7 +29,7 @@ public class UserDao {
 	public String getPasswordByEmail(String email) {
 
 		EntityManager em = emf.createEntityManager();
-		Query query = em.createQuery("SELECT u.password FROM User u WHERE u.email = :email");
+		Query query = em.createQuery("SELECT u.password FROM User u WHERE u.email = :email and u.deleted = 0");
 		query.setParameter("email", email.toLowerCase());
 		List<String> result = query.getResultList();
 		em.close();
@@ -43,7 +44,7 @@ public class UserDao {
 
 		EntityManager em = emf.createEntityManager();
 
-		TypedQuery<User> query = em.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class);
+		TypedQuery<User> query = em.createQuery("SELECT u FROM User u WHERE u.email = :email and u.deleted = 0", User.class);
 		query.setParameter("email", email);
 
 		User user = (User) query.getSingleResult();
@@ -55,6 +56,7 @@ public class UserDao {
 	public void addUser(User user) {
 
 		EntityManager em = emf.createEntityManager();
+		user.setCreate_timestamp(new Date());
 
 		try {
 			em.getTransaction().begin();
