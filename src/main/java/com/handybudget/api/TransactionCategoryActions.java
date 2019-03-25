@@ -19,45 +19,79 @@ public class TransactionCategoryActions extends JSONAction {
 		String operation = request.getParameter("operation");
 		String typeId = request.getParameter("typeId");
 		int userId = postData.optInt("userId");
+		String categoryId = request.getParameter("id");
 
 		switch (operation) {
 
 		case "getlist":
 
-			getTransactionCategoryList(userId, typeId);
+			getTransactionCategoryListByType(userId, typeId);
 
 			break;
-		/*
-		 * case "getdetails":
-		 * 
-		 * getAccountDetails(accountId);
-		 * 
-		 * break;
-		 * 
-		 * case "add":
-		 * 
-		 * addAccount(userId, postData);
-		 * 
-		 * break;
-		 * 
-		 * case "delete":
-		 * 
-		 * deleteAccount(accountId);
-		 * 
-		 * break;
-		 * 
-		 * case "update":
-		 * 
-		 * updateAccount(accountId, postData);
-		 * 
-		 * break;
-		 */
+
+		case "getallcategories":
+
+			getAllCategories(userId);
+
+			break;
+
+		case "getdetails":
+
+			getCategoryDetails(categoryId);
+
+			break;
+
+		case "add":
+
+			addCategory(userId, postData);
+
+			break;
+
+		case "delete":
+
+			deleteCategory(categoryId);
+
+			break;
+
+		case "update":
+
+			updateCategory(categoryId, postData);
+
+			break;
+
 		}
 
 		return result;
 	}
 
-	private void getTransactionCategoryList(int userId, String typeId) {
+	private void deleteCategory(String categoryId) {
+		TransactionCategoryService.deleteCategory(categoryId);
+
+	}
+
+	private void updateCategory(String categoryId, JSONObject postData) {
+		TransactionCategoryService.updateCategory(categoryId, postData);
+
+	}
+
+	private void getCategoryDetails(String categoryId) {
+
+		result = TransactionCategoryService.getCategoryDetails(categoryId);
+
+	}
+
+	private void addCategory(int userId, JSONObject postData) {
+		TransactionCategoryService.addCategory(userId, postData);
+
+	}
+
+	private void getAllCategories(int userId) {
+
+		result = TransactionCategoryService.getAllCategories(userId);
+
+	}
+
+	private void getTransactionCategoryListByType(int userId, String typeId) {
 
 		result = TransactionCategoryService.getTransactionCategoryList(userId, Integer.valueOf(typeId));
 

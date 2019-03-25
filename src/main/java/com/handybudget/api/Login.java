@@ -43,6 +43,8 @@ public class Login extends WebAction {
 			object.put("jsp", "login");
 		}
 
+		request.setAttribute("randomString", GeneralHelper.getRandomString());
+
 		return object;
 	}
 

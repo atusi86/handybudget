@@ -35,3 +35,56 @@
     background-repeat: no-repeat;
     background-position: center;
 }
+
+.editorScreen{
+    display: table;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(192, 192, 192, 0.5);
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.editorScreenMiddle{
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.editorScreenInner{
+    background-color: white;
+    width: 20%;
+    margin: auto;
+    padding: 1%
+}
+
+.monthsList{
+    margin: 1% 0 1% 0;
+}
+
+.deleteQuestion{
+    color: red;
+    font-weight: bold;
+    padding-bottom: 5%;
+}
+
+.categoryAdd{
+    margin-left: 3%;
+    color: #007bff;
+    cursor: pointer;
+}
+
+.categoryFilter{
+    margin: 3% 0 3% 0;
+}
+
+.searchScreenFilter{
+    margin: 1% 0 1% 0;
+}
+
+.searchScreenDateButton{
+    margin: 2% 0 2% 0;
+}

@@ -54,9 +54,42 @@ public class TransactionActions extends JSONAction {
 
 			break;
 
+		case "changeispaid":
+
+			changeIsPaid(transactionId);
+
+			break;
+
+		case "getmonths":
+
+			getTransactionMonths(accountId);
+
+			break;
+
+		case "getalltransactions":
+
+			getAllTransactions(postData);
+
+			break;
+
 		}
 
 		return result;
+	}
+
+	private void getAllTransactions(JSONObject postData) {
+
+		result = TransactionService.getAllTransactionsForSearchScreen(postData);
+
+	}
+
+	private void getTransactionMonths(String accountId) {
+		result = TransactionService.getTransactionMonths(accountId);
+	}
+
+	private void changeIsPaid(String transactionId) {
+		TransactionService.changeIsChange(transactionId);
+
 	}
 
 	private void getTransactionDetails(String transactionId) {

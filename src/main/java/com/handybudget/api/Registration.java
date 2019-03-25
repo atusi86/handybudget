@@ -49,6 +49,8 @@ public class Registration extends WebAction {
 			object.put("jsp", "registration");
 		}
 
+		request.setAttribute("randomString", GeneralHelper.getRandomString());
+
 		return object;
 	}
 

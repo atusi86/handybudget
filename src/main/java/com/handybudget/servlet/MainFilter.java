@@ -106,6 +106,8 @@ public class MainFilter implements javax.servlet.Filter {
 							filterRequest(httpServletRequest, httpServletResponse, action, postData);
 
 						} else {
+							// httpServletRequest.getServletContext().getRequestDispatcher("/unauthorized.jsp").forward(httpServletRequest,
+							// httpServletResponse);
 							httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 						}
 

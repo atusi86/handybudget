@@ -65,9 +65,10 @@ public class TokenDao {
 		try {
 			em.getTransaction().begin();
 			Date currentDate = new Date();
-			Query query = em.createQuery("UPDATE Token t set t.identifier = :identifier, t.update_timestamp = : currentdate where t.user = :user");
+			Query query = em.createQuery("UPDATE Token t set t.identifier = :identifier, t.update_timestamp = : currentdate, t.create_timestamp = : createdate where t.user = :user");
 			query.setParameter("identifier", identifier);
 			query.setParameter("currentdate", currentDate);
+			query.setParameter("createdate", currentDate);
 			query.setParameter("user", user);
 			query.executeUpdate();
 			em.getTransaction().commit();

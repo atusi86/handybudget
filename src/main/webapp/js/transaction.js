@@ -18,7 +18,8 @@ function showAddTransaction(type) {
 
     var token = document.getElementById('token').value;
 
-
+    var categoryAddButton = document.getElementById('categoryAddButton');
+    categoryAddButton.style.display = 'none';
 
     var transaction_editor_button = document.getElementById('transaction_editor_button');
     transaction_editor_button.innerHTML = 'Add transaction';
@@ -42,7 +43,7 @@ function showAddTransaction(type) {
         var json = JSON.parse(xmlHttp.responseText);
 
         var transaction_editor = document.getElementById('transaction_editor');
-        transaction_editor.style.display = 'inline-block';
+        transaction_editor.style.display = 'table';
 
         var transaction_typeList = document.getElementById('transaction_typeList');
         transaction_typeList.innerHTML = '';
@@ -123,6 +124,11 @@ function getTransactionCategoryList() {
             document.getElementById('transaction_duedate').value = '';
         }
 
+        var categoryAddButton = document.getElementById('categoryAddButton');
+        categoryAddButton.style.display = 'inline-block';
+        categoryAddButton.onclick = '';
+        categoryAddButton.onclick = function () { showAddCategory(selectedType.replace('type_', '')) };
+
 
         document.getElementById('loadingScreen').style.display = 'none';
     });
@@ -144,8 +150,10 @@ function addTransaction() {
     var transaction_desc = document.getElementById('transaction_desc').value;
     var transaction_duedate = document.getElementById('transaction_duedate').value;
 
+    var selectedMonth = document.getElementById('selected_month').value;
+
     var URL = "/api/TransactionActions?operation=add";
-    var jsonData = { "accountId": selectedAccount, "categoryId": selectedCategory, "amount": transaction_amount, "desc": transaction_desc.trim(), "duedate": transaction_duedate };
+    var jsonData = { "accountId": selectedAccount, "categoryId": selectedCategory, "amount": transaction_amount, "desc": transaction_desc.trim(), "duedate": transaction_duedate, "selectedMonth": selectedMonth };
     //var json = JSON.parse(syncronJsonPostRequest(URL, JSON.stringify(jsonData), token).response);
 
 
@@ -158,7 +166,7 @@ function addTransaction() {
 
 
 
-        getTransactionList();
+        getTransactionList(undefined, selectedMonth);
 
     });
 
@@ -171,7 +179,11 @@ function getTransactionList(accountId, date) {
         document.getElementById('selected_account').value = accountId;
     }
 
-
+    if (date == undefined) {
+        getMonths();
+    } else {
+        document.getElementById('selected_month').value = date;
+    }
 
 
     var token = document.getElementById('token').value;
@@ -195,6 +207,8 @@ function getTransactionList(accountId, date) {
             var account_screen = document.getElementById('transaction_screen');
             account_screen.style.display = 'inline-block';
 
+
+
             processTransactions(json);
 
             document.getElementById('loadingScreen').style.display = 'none';
@@ -217,6 +231,8 @@ function getTransactionList(accountId, date) {
             var account_screen = document.getElementById('transaction_screen');
             account_screen.style.display = 'inline-block';
 
+
+
             processTransactions(json);
 
             document.getElementById('loadingScreen').style.display = 'none';
@@ -237,7 +253,9 @@ function processTransactions(json) {
     var incomesSum = json.incomesSum;
     var expensesSum = json.expensesSum;
     var adhocSum = json.adhocSum;
-    var balance = json.balance;
+    var prevbalance = json.prevbalance;
+    var currentbalance = json.currentbalance;
+    var aggregatedbalance = json.aggregatedbalance;
 
     var table_regular_income = document.getElementById('table_regular_income_body');
     table_regular_income.innerHTML = '';
@@ -288,6 +306,7 @@ function processTransactions(json) {
         var tdIsPaid = document.createElement('td');
         var isPaidCheckBox = document.createElement('input');
         isPaidCheckBox.type = 'checkbox';
+        setOnChangeForIsPaid(isPaidCheckBox, id);
         if (isPaid) {
             isPaidCheckBox.checked = true;
         }
@@ -356,6 +375,7 @@ function processTransactions(json) {
         var category = regularIncomesArray[i].category;
         var desc = regularIncomesArray[i].desc;
         var amount = regularIncomesArray[i].amount;
+        var isCredited = regularIncomesArray[i].isCredited;
 
         var th = document.createElement('th');
         th.scope = 'row';
@@ -370,6 +390,15 @@ function processTransactions(json) {
         tdDesc.innerHTML = desc;
         var tdAmount = document.createElement('td');
         tdAmount.innerHTML = amount;
+
+        var tdIsCredited = document.createElement('td');
+        var isCreditedCheckBox = document.createElement('input');
+        isCreditedCheckBox.type = 'checkbox';
+        setOnChangeForIsPaid(isCreditedCheckBox, id);
+        if (isCredited) {
+            isCreditedCheckBox.checked = true;
+        }
+        tdIsCredited.appendChild(isCreditedCheckBox);
 
 
         var iEdit = document.createElement('i');
@@ -395,6 +424,7 @@ function processTransactions(json) {
         tr.appendChild(tdCategory);
         tr.appendChild(tdDesc);
         tr.appendChild(tdAmount);
+        tr.appendChild(tdIsCredited);
         tr.appendChild(tdEdit);
         tr.appendChild(tdRemove);
 
@@ -415,7 +445,7 @@ function processTransactions(json) {
     var tdSum = document.createElement('td');
     tdSum.innerHTML = incomesSum;
     tr.appendChild(tdSum);
-    for (var i = 0; i < 2; i++) {
+    for (var i = 0; i < 3; i++) {
         var td = document.createElement('td');
         tr.appendChild(td);
     }
@@ -504,29 +534,77 @@ function processTransactions(json) {
 
     //BALANCE
 
-    var balanceText = document.getElementById('balance');
-    balanceText.innerHTML = 'Balance: ' + balance;
-    balanceText.className = 'balanceAmount';
-    if (balance >= 0) {
-        balanceText.style.color = 'green';
+    var prevbalanceText = document.getElementById('prevbalance');
+    prevbalanceText.innerHTML = 'Previous Balance: ' + prevbalance;
+    //prevbalanceText.className = 'balanceAmount';
+    if (prevbalance >= 0) {
+        prevbalanceText.style.color = 'green';
     } else {
-        balanceText.style.color = 'red';
+        prevbalanceText.style.color = 'red';
+    }
+
+    var currentbalanceText = document.getElementById('currentbalance');
+    currentbalanceText.innerHTML = 'Current Balance: ' + currentbalance;
+    //prevbalanceText.className = 'balanceAmount';
+    if (currentbalance >= 0) {
+        currentbalanceText.style.color = 'green';
+    } else {
+        currentbalanceText.style.color = 'red';
+    }
+
+
+    var aggregatedbalanceText = document.getElementById('aggregatedbalance');
+    aggregatedbalanceText.innerHTML = 'Aggregated Balance: ' + aggregatedbalance;
+    aggregatedbalanceText.className = 'balanceAmount';
+    if (aggregatedbalance >= 0) {
+        aggregatedbalanceText.style.color = 'green';
+    } else {
+        aggregatedbalanceText.style.color = 'red';
     }
 
 }
 
-function setOnclickForTransactionEdit(object, id) {
-    object.onclick = function () { showUpdateTransaction(id); };
+function setOnclickForTransactionEdit(object, id, screen) {
+    object.onclick = function () { showUpdateTransaction(id, screen); };
 
 }
 
-function setOnclickForTransactionRemove(object, id) {
-    object.onclick = function () { deleteTransaction(id); };
+function setOnclickForTransactionRemove(object, id, screen) {
+    object.onclick = function () { showQuestionBeforeDelete(id, 'transaction', screen); };
 }
 
-function deleteTransaction(id) {
+function setOnChangeForIsPaid(object, id, screen) {
+    object.onchange = function () { changeIsPaid(id, screen); };
+}
+
+function changeIsPaid(id, screen) {
+    var token = document.getElementById('token').value;
+
+    var URL = '/api/TransactionActions?operation=changeispaid&id=' + id;
+
+    var selectedMonth = document.getElementById('selected_month').value;
+
+    var xmlHttp = createHttpRequest();
+    var json = asyncronJsonGetRequest(xmlHttp, URL, token, function () {
+        if (xmlHttp == null || xmlHttp.readyState != 4 || xmlHttp.status != 200) {
+            return;
+        }
+        var json = JSON.parse(xmlHttp.responseText);
+
+        if(screen === 'search_screen'){
+            showSearchScreen();
+        }else{
+            getTransactionList(undefined, selectedMonth);
+        }
+
+    });
+
+}
+
+function deleteTransaction(id, screen) {
 
     var token = document.getElementById('token').value;
+    var selectedMonth = document.getElementById('selected_month').value;
 
     var URL = '/api/TransactionActions?operation=delete&id=' + id;
     //var json = JSON.parse(syncronJsonGetRequest(URL, token).response);
@@ -538,17 +616,25 @@ function deleteTransaction(id) {
         }
         var json = JSON.parse(xmlHttp.responseText);
 
-        getTransactionList();
+        if (screen === 'search_screen') {
+            showSearchScreen();
+        } else {
+            getTransactionList(undefined, selectedMonth);
+        }
+
+        document.getElementById('before_remove').style.display = 'none';
 
     });
 
 
 }
 
-function showUpdateTransaction(id) {
+function showUpdateTransaction(id, screen) {
 
     var token = document.getElementById('token').value;
 
+    var categoryAddButton = document.getElementById('categoryAddButton');
+    categoryAddButton.style.display = 'inline-block';
 
 
     var URL = "/api/TransactionActions?operation=getdetails&id=" + id;
@@ -652,11 +738,18 @@ function showUpdateTransaction(id) {
 
                 var transaction_editor_button = document.getElementById('transaction_editor_button');
                 transaction_editor_button.onclick = '';
-                transaction_editor_button.onclick = function () { updateTransaction(id); };
+                transaction_editor_button.onclick = function () { updateTransaction(id, screen); };
                 transaction_editor_button.innerHTML = 'Update';
 
                 var transaction_editor = document.getElementById('transaction_editor');
-                transaction_editor.style.display = 'inline-block';
+                transaction_editor.style.display = 'table';
+
+
+                var transaction_typeList = document.getElementById('transaction_typeList');
+                var selectedType = transaction_typeList.options[transaction_typeList.selectedIndex].id;
+                categoryAddButton.onclick = '';
+                categoryAddButton.onclick = function () { showAddCategory(selectedType.replace('type_', '')) };
+
 
                 document.getElementById('loadingScreen').style.display = 'none';
             });
@@ -666,9 +759,11 @@ function showUpdateTransaction(id) {
     });
 
 
+
+
 }
 
-function updateTransaction(id) {
+function updateTransaction(id, screen) {
 
     var token = document.getElementById('token').value;
 
@@ -682,6 +777,8 @@ function updateTransaction(id) {
     var transaction_desc = document.getElementById('transaction_desc').value;
     var transaction_duedate = document.getElementById('transaction_duedate').value;
 
+    var selectedMonth = document.getElementById('selected_month').value;
+
     var URL = "/api/TransactionActions?operation=update&id=" + id;
     var jsonData = { "categoryId": selectedCategory, "amount": transaction_amount, "desc": transaction_desc.trim(), "duedate": transaction_duedate };
     //var json = JSON.parse(syncronJsonPostRequest(URL, JSON.stringify(jsonData), token).response);
@@ -693,12 +790,54 @@ function updateTransaction(id) {
         }
         var json = JSON.parse(xmlHttp.responseText);
 
-        getTransactionList();
+        if (screen === 'search_screen') {
+            showSearchScreen();
+        } else {
+            getTransactionList(undefined, selectedMonth);
+        }
+
 
 
 
     });
 
+
+
+}
+
+function getMonths() {
+
+    var token = document.getElementById('token').value;
+    var selectedAccount = document.getElementById('selected_account').value;
+
+    var URL = "/api/TransactionActions?operation=getmonths&accountId=" + selectedAccount;
+
+    var xmlHttp = createHttpRequest();
+    asyncronJsonGetRequest(xmlHttp, URL, token, function () {
+        if (xmlHttp == null || xmlHttp.readyState != 4 || xmlHttp.status != 200) {
+            return;
+        }
+        var json = JSON.parse(xmlHttp.responseText);
+
+        var monthsArray = json.months;
+
+        var monthsListDiv = document.getElementById('monthsListDiv');
+        monthsListDiv.style.display = 'inline-block';
+
+        var monthsList = document.getElementById('monthsList');
+        monthsList.innerHTML = '';
+
+        for (var i = 0; i < monthsArray.length - 1; i++) {
+
+            var li = '<li class="nav-item"><a class="nav-link" id=month_"' + monthsArray[i] + '" data-toggle="tab" href="#" onclick="getTransactionList(' + selectedAccount + ',\'' + monthsArray[i] + '\')" role="tab" aria-controls="home" aria-selected="false">' + monthsArray[i] + '</a></li>'
+            monthsList.innerHTML += li;
+        }
+
+        var li = '<li class="nav-item"><a class="nav-link active" id=month_"' + monthsArray[monthsArray.length - 1] + '" data-toggle="tab" href="#" onclick="getTransactionList(' + selectedAccount + ',\'' + monthsArray[i] + '\')" role="tab" aria-controls="home" aria-selected="true">' + monthsArray[monthsArray.length - 1] + '</a></li>'
+        monthsList.innerHTML += li;
+
+
+    });
 
 
 }

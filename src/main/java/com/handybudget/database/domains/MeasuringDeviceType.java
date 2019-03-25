@@ -4,21 +4,15 @@ import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-public class MeasuringDevicePosition {
+public class MeasuringDeviceType {
 
 	@Id
 	private int id;
-
-	@ManyToOne
-	@JoinColumn(name = "device_id")
-	private MeasuringDevice measuringDevice;
-	private int position;
+	private String name;
 	private int deleted;
 
 	@Temporal(TemporalType.TIMESTAMP)
@@ -27,13 +21,12 @@ public class MeasuringDevicePosition {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date update_timestamp;
 
-	public MeasuringDevicePosition() {
+	public MeasuringDeviceType() {
 	}
 
-	public MeasuringDevicePosition(MeasuringDevice measuringDevice, int position) {
+	public MeasuringDeviceType(String name) {
 		super();
-		this.measuringDevice = measuringDevice;
-		this.position = position;
+		this.name = name;
 	}
 
 	public int getId() {
@@ -44,12 +37,12 @@ public class MeasuringDevicePosition {
 		this.id = id;
 	}
 
-	public int getPosition() {
-		return position;
+	public String getName() {
+		return name;
 	}
 
-	public void setPosition(int position) {
-		this.position = position;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public int getDeleted() {
@@ -74,14 +67,6 @@ public class MeasuringDevicePosition {
 
 	public void setUpdate_timestamp(Date update_timestamp) {
 		this.update_timestamp = update_timestamp;
-	}
-
-	public MeasuringDevice getMeasuringDevice() {
-		return measuringDevice;
-	}
-
-	public void setMeasuringDevice(MeasuringDevice measuringDevice) {
-		this.measuringDevice = measuringDevice;
 	}
 
 }

@@ -1,5 +1,3 @@
-
-
 function getAccountList() {
 
     var token = document.getElementById('token').value;
@@ -8,6 +6,7 @@ function getAccountList() {
     var URL = '/api/AccountActions?operation=getlist';
     var json = asyncronJsonGetRequest(xmlHttp, URL, token, function () {
         if (xmlHttp == null || xmlHttp.readyState != 4 || xmlHttp.status != 200) {
+            //document.getElementById('loadingScreen').style.display = 'none';
             return;
         }
         var json = JSON.parse(xmlHttp.responseText);
@@ -94,29 +93,19 @@ function setOnclickForEdit(object, id) {
 }
 
 function setOnclickForRemove(object, id) {
-    object.onclick = function () { deleteAccount(id); };
+    object.onclick = function () { showQuestionBeforeDelete(id, 'account'); };
 }
 
 function setOnclickForCell(object, id) {
-    object.onclick = function () { getTransactionList(id) }
+    object.onclick = function () { getTransactionList(id, undefined) }
 }
 
-/*function showAccountList() {
-
-    getAccountList();
-
-    hideAllScreens();
-
-    var account_screen = document.getElementById('account_screen');
-    account_screen.style.display = 'inline-block';
-
-}*/
 
 
 function showAddAccount() {
 
     var account_editor = document.getElementById('account_editor');
-    account_editor.style.display = 'inline-block';
+    account_editor.style.display = 'table';
 
     document.getElementById('accountName').value = '';
     document.getElementById('accountDescription').value = '';
@@ -143,7 +132,7 @@ function showUpdateAccount(accountId) {
         var json = JSON.parse(xmlHttp.responseText);
 
         var account_editor = document.getElementById('account_editor');
-        account_editor.style.display = 'inline-block';
+        account_editor.style.display = 'table';
 
         document.getElementById('accountName').value = json.name;
         document.getElementById('accountDescription').value = json.desc;
@@ -171,7 +160,6 @@ function addAccount() {
 
     var URL = "/api/AccountActions?operation=add";
     var jsonData = { "name": accountName.trim(), "desc": accountDescription.trim() };
-    //var json = JSON.parse(syncronJsonPostRequest(URL, JSON.stringify(jsonData), token).response);
 
     var xmlHttp = createHttpRequest();
     var json = asyncronJsonPostRequest(xmlHttp, URL, token, jsonData, function () {
@@ -186,12 +174,7 @@ function addAccount() {
 
 
     });
-
-
-
 }
-
-
 
 function updateAccount(accountId) {
 
@@ -205,7 +188,6 @@ function updateAccount(accountId) {
 
     var URL = "/api/AccountActions?operation=update&id=" + accountId;
     var jsonData = { "name": accountName.trim(), "desc": accountDescription.trim() };
-    //var json = JSON.parse(syncronJsonPostRequest(URL, JSON.stringify(jsonData), token).response);
 
     var xmlHttp = createHttpRequest();
     var json = asyncronJsonPostRequest(xmlHttp, URL, token, jsonData, function () {
@@ -230,7 +212,6 @@ function deleteAccount(accountId) {
     var token = document.getElementById('token').value;
 
     var URL = '/api/AccountActions?operation=delete&id=' + accountId;
-    //var json = JSON.parse(syncronJsonGetRequest(URL, token).response);
 
     var xmlHttp = createHttpRequest();
     var json = asyncronJsonGetRequest(xmlHttp, URL, token, function () {
@@ -241,23 +222,10 @@ function deleteAccount(accountId) {
 
         getAccountList();
 
+        document.getElementById('before_remove').style.display = 'none';
 
     });
 
 
 }
 
-function hideAllScreens() {
-
-    var account_screen = document.getElementById('account_screen');
-    account_screen.style.display = 'none';
-    var account_editor = document.getElementById('account_editor');
-    account_editor.style.display = 'none';
-    var account_screen = document.getElementById('transaction_screen');
-    account_screen.style.display = 'none';
-    var transaction_editor = document.getElementById('transaction_editor');
-    transaction_editor.style.display = 'none';
-
-
-
-}

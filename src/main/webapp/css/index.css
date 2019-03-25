@@ -32,3 +32,11 @@ hr {
 	margin: auto;
 	opacity: 0.8;
 }
+
+.loginDiv{
+	width: 20%;
+	margin: auto;
+	background-color: rgba(255,255,255,0.7);
+	padding: 1%;
+	color: black;
+}
